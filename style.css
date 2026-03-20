@@ -41,7 +41,11 @@ footer {
     border: 1px solid #0d4355;
     border-radius: 10px;
     filter: drop-shadow(10px 10px 4px rgba(255, 255, 255, 0.4));
-    }
+}
+
+.card :hover {
+    cursor: pointer;
+}
 
 .card-header {
     height: 100%;
