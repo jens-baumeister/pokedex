@@ -11,7 +11,6 @@ const BASE_URL = `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${pokeJson.l
 
 function init() {
     fetchPokemons();
-    console.log(pokeJson);
     
 }
 
@@ -49,6 +48,5 @@ function renderPokeCards() {
     for (let i = 0; i < pokeJson.length; i++) {
         pokeCardRef.innerHTML += getPokeCard(i);        
     }
-
     endOfLoading();
 }
