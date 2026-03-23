@@ -23,7 +23,7 @@ async function fetchPokemons(){
             throw new Error(`Fehler! Status: ${response.status}`);
         }
         let data = await response.json();
-        pokeJson = data.resultsgit ;
+        pokeJson = data.results;
         console.log('Daten wurden erfolgreich gepusht:', pokeJson);
         
     } catch (error) {
