@@ -10,20 +10,20 @@ const BASE_URL = `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${pokeJson.l
 // bilderpfad: https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/[i].png
 
 function init() {
-    fetchPokemons('/forms');
+    fetchPokemons();
     console.log(pokeJson);
     
 }
 
-async function fetchPokemons(path=""){
+async function fetchPokemons(){
     try {
         load();
-        let response = await fetch(BASE_URL + path + '.json');
+        let response = await fetch(BASE_URL);
         if (!response.ok) {
             throw new Error(`Fehler! Status: ${response.status}`);
         }
         let data = await response.json();
-        pokeJson.push(data);
+        pokeJson = data.resultsgit ;
         console.log('Daten wurden erfolgreich gepusht:', pokeJson);
         
     } catch (error) {
@@ -47,7 +47,7 @@ function renderPokeCards() {
     let pokeCardRef = document.getElementById('card')
     pokeCardRef.innerHTML = ""
     for (let i = 0; i < pokeJson.length; i++) {
-        pokeCardRef.innerHTML += getPokeCard();        
+        pokeCardRef.innerHTML += getPokeCard(i);        
     }
 
     endOfLoading();
