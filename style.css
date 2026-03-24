@@ -13,7 +13,6 @@ footer {
 .card-area {
     width: 100%;
     max-width: 1440px;
-    height: 100vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
