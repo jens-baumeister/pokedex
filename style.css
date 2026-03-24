@@ -17,7 +17,7 @@ footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    
+
 }
 
 .header-content {
@@ -63,8 +63,13 @@ footer {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loader img {
@@ -88,10 +93,15 @@ footer {
     height: 200px;
     padding-bottom: 30px;
     object-position: center;
+    filter: drop-shadow(20px 15px 4px rgba(0, 0, 0, 0.4));
 }
 
 .card :hover {
     cursor: pointer;
+}
+
+.card img :hover {
+    filter: drop-shadow(5px 5px 4px rgba(0, 0, 0, 0.4))
 }
 
 .card-header {
@@ -109,7 +119,7 @@ footer {
     height: 100%;
     display: flex;
     align-items: center;
-    background-color: white;
+    background-color: green;
 }
 
 .card-footer {

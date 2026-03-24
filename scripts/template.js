@@ -1,7 +1,6 @@
 function getPokeCard(i) {
-
-    let urlParts = pokeJson[i].url.split('/');
-    let id = urlParts[urlParts.length - 2];
+  let urlParts = pokeJson[i].url.split("/");
+  let id = urlParts[urlParts.length - 2];
   return `
 <section class="card">
     <div class="card-header">#${id} ${pokeJson[i].name.charAt(0).toUpperCase(1) + pokeJson[i].name.slice(1).toLowerCase()}</div>
