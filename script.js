@@ -8,7 +8,7 @@ function init() {
 
 async function fetchPokemons() {
   try {
-    load();
+  load();
     let response = await fetch(BASE_URL);
     if (!response.ok) {
       throw new Error(`Fehler! Status: ${response.status}`);
@@ -19,6 +19,7 @@ async function fetchPokemons() {
   } catch (error) {
     console.error("Fehler beim Laden:", error);
   }
+  endOfLoading();
   renderPokeCards();
 }
 
@@ -32,11 +33,24 @@ function endOfLoading() {
   document.getElementById("loader").style.display = "none";
 }
 
-function renderPokeCards() {
+async function renderPokeCards() {
   let pokeCardRef = document.getElementById("card");
   pokeCardRef.innerHTML = "";
   for (let i = 0; i < pokeJson.length; i++) {
-    pokeCardRef.innerHTML += getPokeCard(i);
+    pokeCardRef.innerHTML += await getPokeCard(i);
   }
-  endOfLoading();
+}
+
+async function getTypeIcons(types) {
+  let icons =[];
+
+  for (let t of types) {
+    let response = await fetch(t.type.url);
+    let data = await response.json();
+
+    let icon = data.sprites['generation-viii']['sword-shield'].symbol_icon;
+   
+    icons.push(`<img src="${icon}" alt="${t.type.name}">`);
+  }
+  return icons.join("");
 }
