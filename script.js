@@ -7,8 +7,8 @@ function init() {
 }
 
 async function fetchPokemons() {
-  load();
   try {
+  load();
     let response = await fetch(`${BASE_URL}?limit=20&offset=${pokeJson.length}`);
     if (!response.ok) {
       throw new Error(`Fehler! Status: ${response.status}`);
@@ -16,11 +16,12 @@ async function fetchPokemons() {
     let data = await response.json();
     pokeJson = pokeJson.concat(data.results);
     console.log("Daten wurden erfolgreich gepusht:", pokeJson);
+    await renderPokeCards();
   } catch (error) {
     console.error("Fehler beim Laden:", error);
+  }finally {
+    endOfLoading();
   }
-
-  endOfLoading();
   renderPokeCards();
 }
 
