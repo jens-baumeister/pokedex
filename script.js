@@ -1,24 +1,26 @@
 let pokeJson = [];
 
-const BASE_URL = `https://pokeapi.co/api/v2/pokemon?limit=20&offset=${pokeJson.length}`;
+const BASE_URL = `https://pokeapi.co/api/v2/pokemon`;
 
 function init() {
   fetchPokemons();
 }
 
 async function fetchPokemons() {
-  try {
   load();
-    let response = await fetch(BASE_URL);
+  try {
+    let response = await fetch(`${BASE_URL}?limit=20&offset=${pokeJson.length}`);
     if (!response.ok) {
       throw new Error(`Fehler! Status: ${response.status}`);
     }
     let data = await response.json();
-    pokeJson = data.results;
+    pokeJson = pokeJson.concat(data.results);
     console.log("Daten wurden erfolgreich gepusht:", pokeJson);
   } catch (error) {
     console.error("Fehler beim Laden:", error);
   }
+
+  endOfLoading();
   renderPokeCards();
 }
 
@@ -52,4 +54,8 @@ async function getTypeIcons(types) {
     icons.push(`<img src="${icon}" alt="${t.type.name}">`);
   }
   return icons.join("");
+}
+
+function loadMore() {
+  fetchPokemons();
 }

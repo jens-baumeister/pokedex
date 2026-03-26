@@ -40,6 +40,7 @@ footer {
     padding: 20px;
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
 }
 
 .loader {
@@ -147,4 +148,17 @@ footer {
     justify-content: space-between;
     align-items: center;
     color: white;
+}
+
+.load {
+    display: flex;
+    justify-content: center;
+}
+
+.load-btn {
+    width: 120px;
+    height: 40px;
+    background-color: #ff0201;
+    color:#d9d9d9;
+    border-radius: 20px;
 }

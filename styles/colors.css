@@ -17,3 +17,35 @@
 .normal {
     background-color: #9099a1;
 }
+
+.poison {
+    background-color: #ab6ac8;
+}
+
+.ground {
+    background-color: #d97746;
+}
+
+.electric {
+    background-color: #f3d13b;
+}
+
+.fairy {
+    background-color: #ec8fe6;
+}
+
+.fighting {
+    background-color: #ce4069;
+}
+
+.psychic {
+background-color: #f97176;
+}
+
+.rock {
+background-color: #c7b68b;
+}
+
+.ghost {
+Background-color: #5269ac;
+}

@@ -6,8 +6,6 @@ async function getPokeCard(i) {
   let name = data.name;
   let typesHTML = await getTypeIcons(data.types);
   let mainType = data.types[0].type.name;
-
-  endOfLoading();
   
   return `
 <section class="card">
