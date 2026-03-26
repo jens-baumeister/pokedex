@@ -19,7 +19,6 @@ async function fetchPokemons() {
   } catch (error) {
     console.error("Fehler beim Laden:", error);
   }
-  endOfLoading();
   renderPokeCards();
 }
 
