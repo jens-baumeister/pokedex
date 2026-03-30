@@ -1,5 +1,7 @@
 let pokeJson = [];
 
+let currentPokemons = [];
+
 const BASE_URL = `https://pokeapi.co/api/v2/pokemon`;
 
 function init() {
@@ -8,8 +10,10 @@ function init() {
 
 async function fetchPokemons() {
   try {
-  load();
-    let response = await fetch(`${BASE_URL}?limit=20&offset=${pokeJson.length}`);
+    load();
+    let response = await fetch(
+      `${BASE_URL}?limit=20&offset=${pokeJson.length}`,
+    );
     if (!response.ok) {
       throw new Error(`Fehler! Status: ${response.status}`);
     }
@@ -19,9 +23,10 @@ async function fetchPokemons() {
     await renderPokeCards();
   } catch (error) {
     console.error("Fehler beim Laden:", error);
-  }finally {
+  } finally {
     endOfLoading();
   }
+  currentPokemons = pokeJson;
   renderPokeCards();
 }
 
@@ -38,20 +43,20 @@ function endOfLoading() {
 async function renderPokeCards() {
   let pokeCardRef = document.getElementById("card");
   pokeCardRef.innerHTML = "";
-  for (let i = 0; i < pokeJson.length; i++) {
+  for (let i = 0; i < currentPokemons.length; i++) {
     pokeCardRef.innerHTML += await getPokeCard(i);
   }
 }
 
 async function getTypeIcons(types) {
-  let icons =[];
+  let icons = [];
 
   for (let t of types) {
     let response = await fetch(t.type.url);
     let data = await response.json();
 
-    let icon = data.sprites['generation-viii']['sword-shield'].symbol_icon;
-   
+    let icon = data.sprites["generation-viii"]["sword-shield"].symbol_icon;
+
     icons.push(`<img src="${icon}" alt="${t.type.name}">`);
   }
   return icons.join("");
@@ -59,4 +64,18 @@ async function getTypeIcons(types) {
 
 function loadMore() {
   fetchPokemons();
+}
+
+function search() {
+  let filterWord = document.getElementById("poke-search").value.toLowerCase();
+
+  if (filterWord.length < 3) {
+    currentPokemons = pokeJson;
+  } else {
+    currentPokemons = pokeJson.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(filterWord),
+    );
+  }
+
+  renderPokeCards();
 }

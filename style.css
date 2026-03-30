@@ -138,7 +138,7 @@ input {
     border-radius: 0 0 10px 10px;
 }
 
-.card-footer img{
+.card-footer img {
     width: 40px;
     height: 30px;
     padding-left: 10px;
@@ -164,7 +164,7 @@ input {
     width: 120px;
     height: 40px;
     background-color: #ff0201;
-    color:#d9d9d9;
+    color: #d9d9d9;
     border-radius: 20px;
 }
 
@@ -172,6 +172,6 @@ input {
     width: 80px;
     height: 32px;
     background-color: #ff0201;
-    color:#d9d9d9;
+    color: #d9d9d9;
     border-radius: 20px;
 }

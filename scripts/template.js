@@ -1,12 +1,12 @@
 async function getPokeCard(i) {
-  let response = await fetch(pokeJson[i].url);
+  let response = await fetch(currentPokemons[i].url);
   let data = await response.json();
 
   let id = data.id;
   let name = data.name;
   let typesHTML = await getTypeIcons(data.types);
   let mainType = data.types[0].type.name;
-  
+
   return `
 <section class="card">
     <div class="card-header">#${id} ${name.charAt(0).toUpperCase(1) + name.slice(1).toLowerCase()}</div>
