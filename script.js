@@ -20,14 +20,13 @@ async function fetchPokemons() {
     let data = await response.json();
     pokeJson = pokeJson.concat(data.results);
     console.log("Daten wurden erfolgreich gepusht:", pokeJson);
-    await renderPokeCards();
   } catch (error) {
     console.error("Fehler beim Laden:", error);
   } finally {
     endOfLoading();
   }
   currentPokemons = pokeJson;
-  renderPokeCards();
+  await renderPokeCards();
 }
 
 function load() {
