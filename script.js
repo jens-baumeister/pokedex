@@ -13,15 +13,12 @@ function init() {
 async function fetchPokemons(append = false) {
   try {
     load();
-    let response = await fetch(
-      `${BASE_URL}?limit=20&offset=${pokeJson.length}`,
+    let response = await fetch(`${BASE_URL}?limit=20&offset=${pokeJson.length}`,
     );
-    if (!response.ok) {
-      throw new Error(`Fehler! Status: ${response.status}`);
-    }
+    if (!response.ok) {throw new Error(`Fehler! Status: ${response.status}`)};
+
     let data = await response.json();
     pokeJson = pokeJson.concat(data.results);
-    console.log("Daten wurden erfolgreich gepusht:", pokeJson);
   } catch (error) {
     console.error("Fehler beim Laden:", error);
   }
