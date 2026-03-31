@@ -105,7 +105,11 @@ input {
     cursor: pointer;
 }
 
-.card :hover img {
+.card:focus {
+    transform: scale(1.2);
+}
+
+.card-body:hover img {
     filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.4));
     transform: scale(1.2);
 }
@@ -168,12 +172,22 @@ input {
     border-radius: 20px;
 }
 
+.load-btn:hover,
+.load-btn:focus {
+    transform: scale(1.2)
+}
+
 .search-btn {
     width: 80px;
     height: 32px;
     background-color: #ff0201;
     color: #d9d9d9;
     border-radius: 20px;
+}
+
+.search-btn:hover,
+.search-btn:focus {
+    transform: scale(1.2);
 }
 
 .error-msg {
