@@ -1,3 +1,5 @@
+scrollPosition = 0;
+
 let pokeJson = [];
 
 let currentPokemons = [];
@@ -29,20 +31,18 @@ async function fetchPokemons(append = false) {
 }
 
 function load() {
-  document.getElementById("card").style.display = "none";
-  document.getElementById("loader").style.display = "";
+  document.getElementById("loading-overlay").classList.remove("hidden");
 }
 
 function endOfLoading() {
-  document.getElementById("card").style.display = "";
-  document.getElementById("loader").style.display = "none";
+  document.getElementById("loading-overlay").classList.add("hidden");
 }
 
 async function renderPokeCards(append = false) {
   let pokeCardRef = document.getElementById("card");
 
-  if (!append){
-  pokeCardRef.innerHTML = "";
+  if (!append) {
+    pokeCardRef.innerHTML = "";
   }
   let startIndex = append ? pokeCardRef.children.length : 0;
   for (let i = startIndex; i < currentPokemons.length; i++) {
@@ -73,12 +73,12 @@ function search() {
 
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
-    document.getElementById("error-msg").style="";
+    document.getElementById("error-msg").style = "";
   } else {
     currentPokemons = pokeJson.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(filterWord),
     );
-    document.getElementById("error-msg").style="display: none";
+    document.getElementById("error-msg").style = "display: none";
   }
 
   renderPokeCards();
