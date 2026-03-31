@@ -73,12 +73,10 @@ function search() {
 
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
-    document.getElementById("error-msg").style = "";
   } else {
     currentPokemons = pokeJson.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(filterWord),
     );
-    document.getElementById("error-msg").style = "display: none";
   }
 
   renderPokeCards();
