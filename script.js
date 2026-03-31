@@ -8,7 +8,7 @@ function init() {
   fetchPokemons();
 }
 
-async function fetchPokemons() {
+async function fetchPokemons(append = false) {
   try {
     load();
     let response = await fetch(
@@ -24,7 +24,7 @@ async function fetchPokemons() {
     console.error("Fehler beim Laden:", error);
   }
   currentPokemons = pokeJson;
-  await renderPokeCards();
+  await renderPokeCards(append);
   endOfLoading();
 }
 
@@ -38,11 +38,15 @@ function endOfLoading() {
   document.getElementById("loader").style.display = "none";
 }
 
-async function renderPokeCards() {
+async function renderPokeCards(append = false) {
   let pokeCardRef = document.getElementById("card");
+
+  if (!append){
   pokeCardRef.innerHTML = "";
-  for (let i = 0; i < currentPokemons.length; i++) {
-    pokeCardRef.innerHTML += await getPokeCard(i);
+  }
+  let startIndex = append ? pokeCardRef.children.length : 0;
+  for (let i = startIndex; i < currentPokemons.length; i++) {
+    pokeCardRef.insertAdjacentHTML("beforeend", await getPokeCard(i));
   }
 }
 
@@ -61,7 +65,7 @@ async function getTypeIcons(types) {
 }
 
 function loadMore() {
-  fetchPokemons();
+  fetchPokemons(true);
 }
 
 function search() {
