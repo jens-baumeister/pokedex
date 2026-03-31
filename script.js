@@ -22,11 +22,10 @@ async function fetchPokemons() {
     console.log("Daten wurden erfolgreich gepusht:", pokeJson);
   } catch (error) {
     console.error("Fehler beim Laden:", error);
-  } finally {
-    endOfLoading();
   }
   currentPokemons = pokeJson;
   await renderPokeCards();
+  endOfLoading();
 }
 
 function load() {
