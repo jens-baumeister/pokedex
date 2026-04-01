@@ -80,20 +80,13 @@ function search() {
 }
 
 async function openPokeCard(index){
-  console.log("INDEX:", index);
-  console.log("POKEMON:", currentPokemons[index]);
-
   let response = await fetch(currentPokemons[index].url);
   let data = await response.json();
 
-  console.log("DATA:", data);
+  document.getElementById("pokecard").innerHTML = getPokeDetails(data);
+  document.getElementById("pokecard").classList.add("open");
 
-  let typesHTML = await getTypeIcons(data.types);
-
-  document.getElementById("pokecard").innerHTML =
-    getPokeDetails(data, typesHTML);
-
-    document.getElementById("pokecard").classList.add("open")
+  renderPokeDetails(data);
 }
 
 function closePokeCard(){        
@@ -101,20 +94,19 @@ function closePokeCard(){
   document.getElementById("pokecard").classList.remove("open")
 }
 
-function renderPokeDetails(data) {
-  let mainType = data.types[0].type.name;
+async function renderPokeDetails(data) {
+  // Bild
+  document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
 
-  document.getElementById("poke-id").innerText =
-    `#${data.id} ${capitalize(data.name)}`;
+  // Stats
+  document.getElementById("tab-stats").innerHTML = getStatsTemplate(data);
 
-  document.getElementById("pokecard-img").innerHTML = `
-    <div class="detail-img ${mainType}">
-        <img src="${data.sprites.other["official-artwork"].front_default}">
-    </div>
-  `;
+  // Types
+  document.getElementById("tab-types").innerHTML = getTypesTemplate(data);
 
-  renderStats(data);
-  renderTypes(data);
+  // Evolution
+  let chain = await getEvolutionChain(data);
+  document.getElementById("tab-evo").innerHTML = await renderEvolutionChain(chain);
 }
 
 function capitalize(name) {
@@ -122,19 +114,55 @@ function capitalize(name) {
 }
 
 function showTab(tab) {
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+  const pokecard = document.getElementById("pokecard");
+  if (!pokecard) return;
+  pokecard.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
 
-  document.getElementById(`tab-${tab}`).classList.remove("hidden");
+  // Den gewünschten Tab anzeigen
+  const tabEl = pokecard.querySelector(`#tab-${tab}`);
+  if (tabEl) tabEl.classList.remove("hidden");
 }
 
 function renderStats(data) {
   let statsRef = document.getElementById("tab-stats");
-
   statsRef.innerHTML = getStatsTemplate(data);
 }
 
 async function renderTypes(data) {
   let typesRef = document.getElementById("tab-types");
-
   typesRef.innerHTML = await getTypesTemplate(data);
+}
+
+async function getEvolutionChain(pokemonData) {  
+  let speciesResponse = await fetch(pokemonData.species.url);
+  let speciesData = await speciesResponse.json();
+  let evoResponse = await fetch(speciesData.evolution_chain.url);
+  let evoData = await evoResponse.json();
+  return evoData.chain; 
+}
+
+async function renderEvolutionChain(chain) {
+  let evoHTML = `<div class="evo-timeline">`;
+  async function traverse(chainNode) {
+    let name = chainNode.species.name;
+    let response = await fetch(chainNode.species.url);
+    let speciesData = await response.json();
+    let id = speciesData.id;
+    evoHTML += `
+      <div class="evo-card">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png" alt="${name}">
+        <p>${capitalize(name)}</p>
+      </div>
+    `;
+    if (chainNode.evolves_to.length > 0) {
+      evoHTML += `<span class="evo-arrow">→</span>`;
+    }
+    for (let next of chainNode.evolves_to) {
+      await traverse(next);
+    }
+  }
+
+  await traverse(chain);
+  evoHTML += `</div>`;
+  return evoHTML;
 }

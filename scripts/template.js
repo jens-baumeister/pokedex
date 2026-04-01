@@ -18,19 +18,15 @@ async function getPokeCard(i) {
 </section>`;
 }
 
-function getPokeDetails(data, typesHTML) {
+function getPokeDetails(data) {
   return `
     <article class="pokemon-details">
         <section class="pokecard-header">
             <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
-            <div onclick="closePokeCard()" class="close-btn">
-                ✕
-            </div>
+            <div onclick="closePokeCard()" class="close-btn">✕</div>
         </section>
 
-        <section class="pokecard-img">
-            ${getImageTemplate(data)}
-        </section>
+        <section class="pokecard-img" id="pokecard-img"></section>
 
         <section class="pokecard-content">
             <div class="tabs">
@@ -39,17 +35,9 @@ function getPokeDetails(data, typesHTML) {
                 <button onclick="showTab('types')">Types</button>
             </div>
 
-            <div id="tab-stats" class="tab-content">
-                ${getStatsTemplate(data)}
-            </div>
-
-            <div id="tab-evo" class="tab-content hidden">
-                <!-- später -->
-            </div>
-
-            <div id="tab-types" class="tab-content hidden">
-                ${typesHTML}
-            </div>
+            <div id="tab-stats" class="tab-content"></div>
+            <div id="tab-evo" class="tab-content hidden"></div>
+            <div id="tab-types" class="tab-content hidden"></div>
         </section>
 
         <section class="pokecard-footer"></section>
@@ -81,5 +69,34 @@ function getStatsTemplate(data) {
         <span>${value}</span>
       </div>
     `;
+  }).join("");
+}
+
+function getPokeDetailsStructure(data) {
+  return `
+    <article class="pokemon-details">
+      <section class="pokecard-header">
+        <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
+        <div onclick="closePokeCard()" class="close-btn">✕</div>
+      </section>
+      <section class="pokecard-img" id="pokecard-img"></section>
+      <section class="pokecard-content">
+        <div class="tabs">
+          <button onclick="showTab('stats')">Stats</button>
+          <button onclick="showTab('evo')">Evolution</button>
+          <button onclick="showTab('types')">Types</button>
+        </div>
+        <div id="tab-stats" class="tab-content"></div>
+        <div id="tab-evo" class="tab-content hidden"></div>
+        <div id="tab-types" class="tab-content hidden"></div>
+      </section>
+      <section class="pokecard-footer"></section>
+    </article>
+  `;
+}
+
+function getTypesTemplate(data) {
+  return data.types.map(t => {
+    return `<span class="poke-type ${t.type.name}">${capitalize(t.type.name)}</span>`;
   }).join("");
 }

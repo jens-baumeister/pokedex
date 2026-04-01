@@ -287,3 +287,41 @@ input {
   background: limegreen;
   border-radius: 5px;
 }
+
+.evo-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 10px;
+}
+
+.evo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  position: relative;
+}
+
+.evo-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background-color: #fff;
+  padding: 4px;
+}
+
+.evo-card p {
+  margin-top: 5px;
+  font-size: 14px;
+  text-align: center;
+  color: #d9d9d9;
+}
+
+.evo-arrow {
+  font-size: 24px;
+  color: #d9d9d9;
+  margin: 0 5px;
+}
