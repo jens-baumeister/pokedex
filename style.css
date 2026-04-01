@@ -102,7 +102,7 @@ input {
     grid-template-rows: 40px 200px 40px;
     border: 1px solid #0d4355;
     border-radius: 10px;
-    filter: drop-shadow(10px 10px 4px rgba(255, 255, 255, 0.4));
+    box-shadow: 10px 10px 4px rgba(255, 255, 255, 0.4);
 }
 
 .card-body img {
@@ -187,4 +187,5 @@ input {
 .load-btn:hover,
 .load-btn:focus {
     transform: scale(1.2)
+    
 }
