@@ -8,7 +8,7 @@ async function getPokeCard(i) {
   let mainType = data.types[0].type.name;
 
   return `
-<section class="card" onclick="openPokeCard()" tabindex="0">
+<section class="card" onclick="openPokeCard(${i})" tabindex="0">
     <div class="card-header">#${id} ${name.charAt(0).toUpperCase(1) + name.slice(1).toLowerCase()}</div>
     <div class="card-body ${mainType}">
         <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png"
@@ -16,4 +16,70 @@ async function getPokeCard(i) {
     </div>
     <div class="card-footer">${typesHTML}</div>
 </section>`;
+}
+
+function getPokeDetails(data, typesHTML) {
+  return `
+    <article class="pokemon-details">
+        <section class="pokecard-header">
+            <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
+            <div onclick="closePokeCard()" class="close-btn">
+                ✕
+            </div>
+        </section>
+
+        <section class="pokecard-img">
+            ${getImageTemplate(data)}
+        </section>
+
+        <section class="pokecard-content">
+            <div class="tabs">
+                <button onclick="showTab('stats')">Stats</button>
+                <button onclick="showTab('evo')">Evolution</button>
+                <button onclick="showTab('types')">Types</button>
+            </div>
+
+            <div id="tab-stats" class="tab-content">
+                ${getStatsTemplate(data)}
+            </div>
+
+            <div id="tab-evo" class="tab-content hidden">
+                <!-- später -->
+            </div>
+
+            <div id="tab-types" class="tab-content hidden">
+                ${typesHTML}
+            </div>
+        </section>
+
+        <section class="pokecard-footer"></section>
+    </article>
+  `;
+}
+
+function getImageTemplate(data) {
+  let id = data.id;
+  let mainType = data.types[0].type.name;
+
+  return `
+    <div class="detail-img ${mainType}">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png">
+    </div>
+  `;
+}
+
+function getStatsTemplate(data) {
+  return data.stats.map(stat => {
+    let value = stat.base_stat;
+
+    return `
+      <div class="stat-row">
+        <span>${stat.stat.name.toUpperCase()}</span>
+        <div class="bar">
+          <div class="fill" style="width: ${Math.min(value, 100)}%"></div>
+        </div>
+        <span>${value}</span>
+      </div>
+    `;
+  }).join("");
 }

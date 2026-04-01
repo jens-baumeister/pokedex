@@ -79,10 +79,62 @@ function search() {
   renderPokeCards();
 }
 
-function openPokeCard(){
-  document.getElementById("pokecard").classList.add("open")
+async function openPokeCard(index){
+  console.log("INDEX:", index);
+  console.log("POKEMON:", currentPokemons[index]);
+
+  let response = await fetch(currentPokemons[index].url);
+  let data = await response.json();
+
+  console.log("DATA:", data);
+
+  let typesHTML = await getTypeIcons(data.types);
+
+  document.getElementById("pokecard").innerHTML =
+    getPokeDetails(data, typesHTML);
+
+    document.getElementById("pokecard").classList.add("open")
 }
 
-function closePokeCard(){
+function closePokeCard(){        
+  
   document.getElementById("pokecard").classList.remove("open")
+}
+
+function renderPokeDetails(data) {
+  let mainType = data.types[0].type.name;
+
+  document.getElementById("poke-id").innerText =
+    `#${data.id} ${capitalize(data.name)}`;
+
+  document.getElementById("pokecard-img").innerHTML = `
+    <div class="detail-img ${mainType}">
+        <img src="${data.sprites.other["official-artwork"].front_default}">
+    </div>
+  `;
+
+  renderStats(data);
+  renderTypes(data);
+}
+
+function capitalize(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+function showTab(tab) {
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+
+  document.getElementById(`tab-${tab}`).classList.remove("hidden");
+}
+
+function renderStats(data) {
+  let statsRef = document.getElementById("tab-stats");
+
+  statsRef.innerHTML = getStatsTemplate(data);
+}
+
+async function renderTypes(data) {
+  let typesRef = document.getElementById("tab-types");
+
+  typesRef.innerHTML = await getTypesTemplate(data);
 }
