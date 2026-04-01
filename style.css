@@ -262,7 +262,8 @@ input {
 
 .pokecard-content {
     width: 100%;
-    flex: 1;
+    height: 100%;
+    max-height: 370px;
     background-color: #0c5273;
     overflow-y: auto;
     scroll-behavior: contain;
