@@ -309,6 +309,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   overflow-x: auto;
   padding: 10px;
   gap: 10px;
@@ -342,3 +343,31 @@ input {
   color: #d9d9d9;
   margin: 0 5px;
 }
+
+/* .hidden {
+  display: none;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+}
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.bar {
+  width: 100%;
+  height: 10px;
+  background: #ccc;
+  border-radius: 5px;
+}
+
+.fill {
+  height: 100%;
+  background: limegreen;
+  border-radius: 5px;
+} */

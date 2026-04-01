@@ -145,7 +145,7 @@ async function renderEvolutionChain(chain) {
       </div>
     `;
     if (chainNode.evolves_to.length > 0) {
-      evoHTML += `<span class="evo-arrow">→</span>`;
+      evoHTML += `<span class="evo-arrow">↓</span>`;
     }
     for (let next of chainNode.evolves_to) {
       await traverse(next);
