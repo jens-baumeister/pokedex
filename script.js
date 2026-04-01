@@ -89,22 +89,14 @@ async function openPokeCard(index){
   renderPokeDetails(data);
 }
 
-function closePokeCard(){        
-  
+function closePokeCard(){ 
   document.getElementById("pokecard").classList.remove("open")
 }
 
 async function renderPokeDetails(data) {
-  // Bild
   document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
-
-  // Stats
   document.getElementById("tab-stats").innerHTML = getStatsTemplate(data);
-
-  // Types
   document.getElementById("tab-types").innerHTML = getTypesTemplate(data);
-
-  // Evolution
   let chain = await getEvolutionChain(data);
   document.getElementById("tab-evo").innerHTML = await renderEvolutionChain(chain);
 }
@@ -117,8 +109,6 @@ function showTab(tab) {
   const pokecard = document.getElementById("pokecard");
   if (!pokecard) return;
   pokecard.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-
-  // Den gewünschten Tab anzeigen
   const tabEl = pokecard.querySelector(`#tab-${tab}`);
   if (tabEl) tabEl.classList.remove("hidden");
 }
