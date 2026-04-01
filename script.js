@@ -78,3 +78,11 @@ function search() {
 
   renderPokeCards();
 }
+
+function openPokeCard(){
+  document.getElementById("pokecard").classList.add("open")
+}
+
+function closePokeCard(){
+  document.getElementById("pokecard").classList.remove("open")
+}

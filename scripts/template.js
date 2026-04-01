@@ -8,7 +8,7 @@ async function getPokeCard(i) {
   let mainType = data.types[0].type.name;
 
   return `
-<section class="card" tabindex="0">
+<section class="card" onclick="openPokeCard()" tabindex="0">
     <div class="card-header">#${id} ${name.charAt(0).toUpperCase(1) + name.slice(1).toLowerCase()}</div>
     <div class="card-body ${mainType}">
         <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png"
