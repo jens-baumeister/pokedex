@@ -1,20 +1,26 @@
-async function getPokeCard(i) {
-  let response = await fetch(currentPokemons[i].url);
-  let data = await response.json();
 
-  let id = data.id;
-  let name = data.name;
-  let typesHTML = await getTypeIcons(data.types);
-  let mainType = data.types[0].type.name;
+async function getPokeCard(i) {
+  const response = await fetch(currentPokemons[i].url);
+  const data = await response.json();
+  const id = data.id;
+  const mainType = data.types[0].type.name;
+
+  let footerIcons = "";
+  for (let t of data.types) {
+    const res = await fetch(t.type.url);
+    const typeData = await res.json();
+    const icon = typeData.sprites["generation-viii"]["sword-shield"].symbol_icon;
+    footerIcons += `<img src="${icon}" alt="${t.type.name}" class="type-icon-small">`;
+  }
 
   return `
 <section class="card" onclick="openPokeCard(${i})" tabindex="0">
-    <div class="card-header">#${id} ${name.charAt(0).toUpperCase(1) + name.slice(1).toLowerCase()}</div>
-    <div class="card-body ${mainType}">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png"
-                alt="picture of ${name}">
-    </div>
-    <div class="card-footer">${typesHTML}</div>
+  <div class="card-header">#${id} ${capitalize(data.name)}</div>
+  <div class="card-body ${mainType}">
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png"
+         alt="picture of ${data.name}">
+  </div>
+  <div class="card-footer">${footerIcons}</div>
 </section>`;
 }
 
@@ -84,4 +90,12 @@ function getTypesTemplate(data) {
   return data.types.map(t => {
     return `<span class="poke-type ${t.type.name}">${capitalize(t.type.name)}</span>`;
   }).join("");
+}
+
+function getEvoCardTemplate(id, name) {
+  return `
+    <div class="evo-card">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png" alt="${name}">
+      <p>${capitalize(name)}</p>
+    </div>`;
 }
