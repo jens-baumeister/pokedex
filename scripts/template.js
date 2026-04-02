@@ -43,8 +43,8 @@ function getPokeDetails(data) {
   </section>
   <section class="pokecard-footer">
     <div class="overlay-nav">
-      <button id="prev-pokemon" onclick="navigateOverlay(-1)">←</button>
-      <button id="next-pokemon" onclick="navigateOverlay(1)">→</button>
+        <button class="nav-btn" id="prev-pokemon" onclick="navigateOverlay(-1)"><</button>
+        <button class="nav-btn" id="next-pokemon" onclick="navigateOverlay(1)">></button>
     </div>
   </section>
 </article>`;
