@@ -8,6 +8,7 @@ const BASE_URL = `https://pokeapi.co/api/v2/pokemon`;
 
 function init() {
   fetchPokemons();
+  
 }
 
 async function fetchPokemons(append = false) {
@@ -24,6 +25,8 @@ async function fetchPokemons(append = false) {
   }
   currentPokemons = pokeJson;
   await renderPokeCards(append);
+
+  console.log(pokeJson);
   endOfLoading();
 }
 
@@ -61,6 +64,28 @@ async function getTypeIcons(types) {
   return icons.join("");
 }
 
+  async function renderTypeIcons(types) {
+  let html = "";
+
+  for (let t of types) {
+    let response = await fetch(t.type.url);
+    let data = await response.json();
+
+    let icon = data.sprites["generation-viii"]["sword-shield"].name_icon;
+    if (!icon || icon === "") {
+      icon = data.sprites["generation-viii"]["sword-shield"].symbol_icon;
+    }
+    if (!icon || icon === "") {
+      html += `<span>${t.type.name}</span>`;
+      continue;
+    }
+
+    html += `<img src="${icon}" alt="${t.type.name}" class="type-icon">`;
+  }
+
+  return html;
+}
+
 function loadMore() {
   fetchPokemons(true);
 }
@@ -79,32 +104,29 @@ function search() {
   renderPokeCards();
 }
 
-async function openPokeCard(index){
+async function openPokeCard(index) {
   let response = await fetch(currentPokemons[index].url);
   let data = await response.json();
 
+  // Overlay HTML zuerst setzen
   document.getElementById("pokecard").innerHTML = getPokeDetails(data);
   document.getElementById("pokecard").classList.add("open");
 
+  // Type Icons rendern
+  let typesHtml = await renderTypeIcons(data.types);
+  document.getElementById('tab-types').innerHTML = typesHtml;
+
+  // Weitere Details rendern (ohne Tab Types!)
   renderPokeDetails(data);
 }
 
-function closePokeCard(){        
-  
+function closePokeCard(){ 
   document.getElementById("pokecard").classList.remove("open")
 }
 
 async function renderPokeDetails(data) {
-  // Bild
   document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
-
-  // Stats
   document.getElementById("tab-stats").innerHTML = getStatsTemplate(data);
-
-  // Types
-  document.getElementById("tab-types").innerHTML = getTypesTemplate(data);
-
-  // Evolution
   let chain = await getEvolutionChain(data);
   document.getElementById("tab-evo").innerHTML = await renderEvolutionChain(chain);
 }
@@ -117,8 +139,6 @@ function showTab(tab) {
   const pokecard = document.getElementById("pokecard");
   if (!pokecard) return;
   pokecard.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
-
-  // Den gewünschten Tab anzeigen
   const tabEl = pokecard.querySelector(`#tab-${tab}`);
   if (tabEl) tabEl.classList.remove("hidden");
 }
@@ -131,6 +151,17 @@ function renderStats(data) {
 async function renderTypes(data) {
   let typesRef = document.getElementById("tab-types");
   typesRef.innerHTML = await getTypesTemplate(data);
+}
+
+async function renderTypeIcons(types) {
+  let html = "";
+  for (let t of types) {
+    let response = await fetch(t.type.url);
+    let data = await response.json();
+    let icon = data.sprites["generation-viii"]["sword-shield"].name_icon || data.sprites["generation-viii"]["sword-shield"].symbol_icon;
+    html += `<img src="${icon}" alt="${t.type.name}" class="type-icon">`;
+  }
+  return html;
 }
 
 async function getEvolutionChain(pokemonData) {  
@@ -155,7 +186,7 @@ async function renderEvolutionChain(chain) {
       </div>
     `;
     if (chainNode.evolves_to.length > 0) {
-      evoHTML += `<span class="evo-arrow">→</span>`;
+      evoHTML += `<span class="evo-arrow">↓</span>`;
     }
     for (let next of chainNode.evolves_to) {
       await traverse(next);
