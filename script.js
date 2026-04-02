@@ -130,6 +130,43 @@ function toggleLoading(show) {
   overlay.classList.toggle("hidden", !show);
 }
 
+let currentOverlayIndex = 0;
+
+async function openPokeCard(index) {
+  currentOverlayIndex = index; // merken, welches Pokémon gerade angezeigt wird
+  const data = await fetchPokemonData(index);
+  document.getElementById("pokecard").innerHTML = getPokeDetails(data);
+  document.getElementById("pokecard").classList.add("open");
+
+  const typesHtml = await renderTypeIcons(data.types, "large");
+  document.getElementById('tab-types').innerHTML = typesHtml;
+
+  renderPokeDetails(data);
+}
+
+// Hilfsfunktion, um Pokémon-Daten zu holen
+async function fetchPokemonData(index) {
+  const response = await fetch(currentPokemons[index].url);
+  return await response.json();
+}
+
+// Navigation: vorheriges/nächstes Pokémon
+async function navigateOverlay(direction) {
+  currentOverlayIndex += direction;
+
+  // wrap-around
+  if (currentOverlayIndex < 0) currentOverlayIndex = currentPokemons.length - 1;
+  if (currentOverlayIndex >= currentPokemons.length) currentOverlayIndex = 0;
+
+  const data = await fetchPokemonData(currentOverlayIndex);
+  document.getElementById("pokecard").innerHTML = getPokeDetails(data);
+
+  const typesHtml = await renderTypeIcons(data.types, "large");
+  document.getElementById('tab-types').innerHTML = typesHtml;
+
+  renderPokeDetails(data);
+}
+
 
 function loadMore() {
   fetchPokemons(true);
