@@ -20,56 +20,41 @@ async function getPokeCard(i) {
 
 function getPokeDetails(data) {
   return `
-    <article class="pokemon-details">
-        <section class="pokecard-header">
-            <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
-            <div onclick="closePokeCard()" class="close-btn">✕</div>
-        </section>
-
-        <section class="pokecard-img" id="pokecard-img"></section>
-
-        <section class="pokecard-content">
-            <div class="tabs">
-                <button onclick="showTab('stats')">Stats</button>
-                <button onclick="showTab('evo')">Evolution</button>
-                <button onclick="showTab('types')">Types</button>
-            </div>
-
-            <div id="tab-stats" class="tab-content"></div>
-            <div id="tab-evo" class="tab-content hidden"></div>
-            <div id="tab-types" class="tab-content hidden"></div>
-        </section>
-
-        <section class="pokecard-footer"></section>
-    </article>
-  `;
+<article class="pokemon-details">
+  <section class="pokecard-header">
+    <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
+    <div onclick="closePokeCard()" class="close-btn">✕</div>
+  </section>
+  <section class="pokecard-img" id="pokecard-img"></section>
+  <section class="pokecard-content">
+    <div class="tabs">
+      <button onclick="showTab('stats')">Stats</button>
+      <button onclick="showTab('evo')">Evolution</button>
+      <button onclick="showTab('types')">Types</button>
+    </div>
+    <div id="tab-stats" class="tab-content"></div>
+    <div id="tab-evo" class="tab-content hidden"></div>
+    <div id="tab-types" class="tab-content hidden"></div>
+  </section>
+  <section class="pokecard-footer"></section>
+</article>`;
 }
 
 function getImageTemplate(data) {
-  let id = data.id;
-  let mainType = data.types[0].type.name;
-
-  return `
-    <div class="detail-img ${mainType}">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png">
-    </div>
-  `;
+  const id = data.id;
+  const mainType = data.types[0].type.name;
+  return `<div class="detail-img ${mainType}">
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png">
+  </div>`;
 }
 
 function getStatsTemplate(data) {
-  return data.stats.map(stat => {
-    let value = stat.base_stat;
-
-    return `
-      <div class="stat-row">
-        <span>${stat.stat.name.toUpperCase()}</span>
-        <div class="bar">
-          <div class="fill" style="width: ${Math.min(value, 100)}%"></div>
-        </div>
-        <span>${value}</span>
-      </div>
-    `;
-  }).join("");
+  return data.stats.map(stat => `
+    <div class="stat-row">
+      <span>${stat.stat.name.toUpperCase()}</span>
+      <div class="bar"><div class="fill" style="width: ${Math.min(stat.base_stat, 100)}%"></div></div>
+      <span>${stat.base_stat}</span>
+    </div>`).join("");
 }
 
 function getPokeDetailsStructure(data) {
