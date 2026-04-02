@@ -31,7 +31,8 @@ function getPokeDetails(data) {
     <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
     <div onclick="closePokeCard()" class="close-btn">✕</div>
   </section>
-  <section class="pokecard-img" id="pokecard-img"></section>
+  <section class="pokecard-img" id="pokecard-img">
+  </section>
   <section class="pokecard-content">
     <div class="tabs">
       <button onclick="showTab('stats')">Stats</button>
@@ -41,8 +42,15 @@ function getPokeDetails(data) {
     <div id="tab-stats" class="tab-content"></div>
     <div id="tab-evo" class="tab-content hidden"></div>
     <div id="tab-types" class="tab-content hidden"></div>
+    
   </section>
-  <section class="pokecard-footer"></section>
+  
+  <section class="pokecard-footer">
+    <div class="overlay-nav">
+      <button id="prev-pokemon" onclick="navigateOverlay(-1)">←</button>
+      <button id="next-pokemon" onclick="navigateOverlay(1)">→</button>
+    </div>
+  </section>
 </article>`;
 }
 
