@@ -284,6 +284,12 @@ input {
 .tabs {
   display: flex;
   justify-content: space-around;
+  color: #d9d9d9;
+}
+
+.tab {
+    color: #d9d9d9;
+    font-size: 16px;
 }
 
 .stat-row {
