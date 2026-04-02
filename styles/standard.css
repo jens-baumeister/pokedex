@@ -51,3 +51,13 @@ button {
     border: none;
     background: none;
 }
+
+@media (max-width: 634px){
+    header {
+        height: 60px;
+    }
+
+    footer {
+        height: 60px;
+    }
+}
