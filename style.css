@@ -344,6 +344,11 @@ input {
   margin: 0 5px;
 }
 
+.type-icon {
+  width: 100px;
+  margin: 5px;
+}
+
 /* .hidden {
   display: none;
 }
