@@ -385,6 +385,7 @@ input {
     }
 
     .header-content img {
+        margin-top: 10px;
         width: 40px;
     }
 
