@@ -64,9 +64,6 @@ async function getTypeIcons(types) {
   return icons.join("");
 }
 
-// async function renderTypeIcons(types) {
-//   let html = "";
-
   async function renderTypeIcons(types) {
   let html = "";
 
@@ -75,13 +72,9 @@ async function getTypeIcons(types) {
     let data = await response.json();
 
     let icon = data.sprites["generation-viii"]["sword-shield"].name_icon;
-
-    // Fallback auf symbol_icon, falls name_icon nicht funktioniert
     if (!icon || icon === "") {
       icon = data.sprites["generation-viii"]["sword-shield"].symbol_icon;
     }
-
-    // Wenn immer noch kein Icon → Text
     if (!icon || icon === "") {
       html += `<span>${t.type.name}</span>`;
       continue;
@@ -110,18 +103,6 @@ function search() {
 
   renderPokeCards();
 }
-
-// async function openPokeCard(index){
-//   let response = await fetch(currentPokemons[index].url);
-//   let data = await response.json();
-//   let typesHtml = await renderTypeIcons(data.types);
-//   document.getElementById('tab-types').innerHTML = typesHtml;
-
-//   document.getElementById("pokecard").innerHTML = getPokeDetails(data);
-//   document.getElementById("pokecard").classList.add("open");
-
-//   renderPokeDetails(data);
-// }
 
 async function openPokeCard(index) {
   let response = await fetch(currentPokemons[index].url);
