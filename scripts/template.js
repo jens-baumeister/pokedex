@@ -13,14 +13,14 @@ async function getPokeCard(i) {
   }
 
   return `
-<section class="card" onclick="openPokeCard(${i})" tabindex="0">
+<button class="card" onclick="openPokeCard(${i})">
   <div class="card-header">#${id} ${capitalize(data.name)}</div>
   <div class="card-body ${mainType}">
     <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png"
          alt="picture of ${data.name}">
   </div>
   <div class="card-footer">${footerIcons}</div>
-</section>`;
+</button>`;
 }
 
 function getPokeDetails(data) {
@@ -28,7 +28,7 @@ function getPokeDetails(data) {
 <article class="pokemon-details" onclick="event.stopPropagation()">
   <section class="pokecard-header">
     <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
-    <div onclick="closePokeCard()" class="close-btn">✕</div>
+    <button onclick="closePokeCard()" class="close-btn" id="close-btn">✕</button>
   </section>
   <section class="pokecard-img" id="pokecard-img"></section>
   <section class="pokecard-content">

@@ -43,11 +43,17 @@ async function renderPokeCards(append = false) {
   }
 }
 
+let currentOverlayIndex = 0;
+
 async function openPokeCard(index) {
-  const response = await fetch(currentPokemons[index].url);
-  const data = await response.json();
+  document.activeElement.blur();
+  currentOverlayIndex = index;
+  const data = await fetchPokemonData(index);
   document.getElementById("pokecard").innerHTML = getPokeDetails(data);
   document.getElementById("pokecard").classList.add("open");
+  setTimeout(() => {
+    document.getElementById("close-btn")?.focus();
+  }, 50);
   const typesHtml = await renderTypeIcons(data.types, "large");
   document.getElementById("tab-types").innerHTML = typesHtml;
 
@@ -55,7 +61,10 @@ async function openPokeCard(index) {
 }
 
 function closePokeCard() {
-  document.getElementById("pokecard").classList.remove("open");
+  const overlay = document.getElementById("pokecard");
+  overlay.classList.remove("open");
+  document.activeElement.blur();
+  document.body.focus();
 }
 
 function showTab(tab) {
@@ -125,20 +134,6 @@ function toggleLoading(show) {
   const overlay = document.getElementById("loading-overlay");
   if (!overlay) return;
   overlay.classList.toggle("hidden", !show);
-}
-
-let currentOverlayIndex = 0;
-
-async function openPokeCard(index) {
-  currentOverlayIndex = index;
-  const data = await fetchPokemonData(index);
-  document.getElementById("pokecard").innerHTML = getPokeDetails(data);
-  document.getElementById("pokecard").classList.add("open");
-
-  const typesHtml = await renderTypeIcons(data.types, "large");
-  document.getElementById("tab-types").innerHTML = typesHtml;
-
-  renderPokeDetails(data);
 }
 
 async function fetchPokemonData(index) {
