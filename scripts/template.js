@@ -7,7 +7,8 @@ async function getPokeCard(i) {
   for (let t of data.types) {
     const res = await fetch(t.type.url);
     const typeData = await res.json();
-    const icon = typeData.sprites["generation-viii"]["sword-shield"].symbol_icon;
+    const icon =
+      typeData.sprites["generation-viii"]["sword-shield"].symbol_icon;
     footerIcons += `<img src="${icon}" alt="${t.type.name}" class="type-icon-small">`;
   }
 
@@ -21,7 +22,6 @@ async function getPokeCard(i) {
   <div class="card-footer">${footerIcons}</div>
 </section>`;
 }
-
 
 function getPokeDetails(data) {
   return `
@@ -50,7 +50,6 @@ function getPokeDetails(data) {
 </article>`;
 }
 
-
 function getImageTemplate(data) {
   const id = data.id;
   const mainType = data.types[0].type.name;
@@ -59,21 +58,27 @@ function getImageTemplate(data) {
   </div>`;
 }
 
-
 function getStatsTemplate(data) {
-  return data.stats.map(stat => `
+  return data.stats
+    .map(
+      (stat) => `
     <div class="stat-row">
       <span>${stat.stat.name.toUpperCase()}</span>
       <div class="bar"><div class="fill" style="width: ${Math.min(stat.base_stat, 100)}%"></div></div>
       <span>${stat.base_stat}</span>
-    </div>`).join("");
+    </div>`,
+    )
+    .join("");
 }
-
 
 function getTypesTemplate(data) {
-  return data.types.map(t => `<span class="poke-type ${t.type.name}">${capitalize(t.type.name)}</span>`).join("");
+  return data.types
+    .map(
+      (t) =>
+        `<span class="poke-type ${t.type.name}">${capitalize(t.type.name)}</span>`,
+    )
+    .join("");
 }
-
 
 function getEvoCardTemplate(id, name) {
   return `
