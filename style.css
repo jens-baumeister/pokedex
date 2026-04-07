@@ -292,6 +292,11 @@ input {
     font-size: 16px;
 }
 
+.tab-content {
+    height: 180px;
+    overscroll-behavior: contain;
+}
+
 .stat-row {
     display: flex;
     flex-direction: column;
@@ -338,7 +343,6 @@ input {
 }
 
 .evo-card p {
-    margin-top: 5px;
     font-size: 14px;
     text-align: center;
     color: #d9d9d9;
@@ -368,7 +372,7 @@ input {
 }
 
 #tab-types {
-    height: 100%;
+    height: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
