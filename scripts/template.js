@@ -25,7 +25,7 @@ async function getPokeCard(i) {
 
 function getPokeDetails(data) {
   return `
-<article class="pokemon-details">
+<article class="pokemon-details" onclick="event.stopPropagation()">
   <section class="pokecard-header">
     <p id="poke-id">#${data.id} ${capitalize(data.name)}</p>
     <div onclick="closePokeCard()" class="close-btn">✕</div>
