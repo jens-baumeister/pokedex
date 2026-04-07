@@ -1,14 +1,11 @@
-async function getPokeCard(i) {
-  const response = await fetch(currentPokemons[i].url);
-  const data = await response.json();
+
+async function getPokeCard(data, i) {
   const id = data.id;
   const mainType = data.types[0].type.name;
+  
   let footerIcons = "";
   for (let t of data.types) {
-    const res = await fetch(t.type.url);
-    const typeData = await res.json();
-    const icon =
-      typeData.sprites["generation-viii"]["sword-shield"].symbol_icon;
+    const icon = await getTypeIconUrl(t.type.url, "symbol_icon");
     footerIcons += `<img src="${icon}" alt="${t.type.name}" class="type-icon-small">`;
   }
 

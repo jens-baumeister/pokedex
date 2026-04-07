@@ -1,6 +1,7 @@
 let scrollPosition = 0;
 let pokeJson = [];
 let currentPokemons = [];
+let typeCache = {};
 const BASE_URL = `https://pokeapi.co/api/v2/pokemon`;
 
 function init() {
@@ -25,6 +26,20 @@ async function fetchPokemons(append = false) {
   }
 }
 
+async function getTypeIconUrl(typeUrl, size = "symbol_icon") {
+  if (typeCache[typeUrl]) {
+    return typeCache[typeUrl][size];
+  }
+  const res = await fetch(typeUrl);
+  const typeData = await res.json();
+  typeCache[typeUrl] = {
+    symbol_icon: typeData.sprites["generation-viii"]["sword-shield"].symbol_icon,
+    name_icon: typeData.sprites["generation-viii"]["sword-shield"].name_icon
+  };
+
+  return typeCache[typeUrl][size];
+}
+
 function search() {
   const filterWord = document.getElementById("poke-search").value.toLowerCase();
   currentPokemons =
@@ -37,9 +52,14 @@ function search() {
 async function renderPokeCards(append = false) {
   const container = document.getElementById("card");
   if (!append) container.innerHTML = "";
+
   const startIndex = append ? container.children.length : 0;
+
   for (let i = startIndex; i < currentPokemons.length; i++) {
-    container.insertAdjacentHTML("beforeend", await getPokeCard(i));
+    const data = await getDetailedPokemonData(i);
+    const cardHtml = await getPokeCard(data, i); 
+    
+    container.insertAdjacentHTML("beforeend", cardHtml);
   }
 }
 
@@ -87,19 +107,10 @@ async function renderPokeDetails(data) {
 
 async function renderTypeIcons(types, size = "large") {
   let html = "";
-  for (let t of types) {
-    const response = await fetch(t.type.url);
-    const data = await response.json();
-    let icon =
-      size === "large"
-        ? data.sprites["generation-viii"]["sword-shield"].name_icon
-        : data.sprites["generation-viii"]["sword-shield"].symbol_icon;
+  const iconKey = size === "large" ? "name_icon" : "symbol_icon";
 
-    if (!icon) {
-      icon =
-        data.sprites["generation-viii"]["sword-shield"].symbol_icon ||
-        `<span>${t.type.name}</span>`;
-    }
+  for (let t of types) {
+    const icon = await getTypeIconUrl(t.type.url, iconKey);
     html += `<img src="${icon}" alt="${t.type.name}" class="type-icon ${size}">`;
   }
   return html;
@@ -136,9 +147,14 @@ function toggleLoading(show) {
   overlay.classList.toggle("hidden", !show);
 }
 
-async function fetchPokemonData(index) {
-  const response = await fetch(currentPokemons[index].url);
-  return await response.json();
+async function getDetailedPokemonData(index) {
+  if (pokeJson[index].id) {
+    return pokeJson[index];
+  }
+  const response = await fetch(pokeJson[index].url);
+  const details = await response.json();
+  pokeJson[index] = { ...pokeJson[index], ...details };
+  return pokeJson[index];
 }
 
 async function navigateOverlay(direction) {
