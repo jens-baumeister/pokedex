@@ -266,7 +266,7 @@ input {
     max-height: 370px;
     background-color: #0c5273;
     overflow-y: auto;
-    scroll-behavior: contain;
+    overscroll-behavior: contain;
 }
 
 .pokecard-footer {
