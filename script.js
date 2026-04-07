@@ -56,10 +56,9 @@ async function renderPokeCards(append = false) {
   const startIndex = append ? container.children.length : 0;
 
   for (let i = startIndex; i < currentPokemons.length; i++) {
-    const data = await getDetailedPokemonData(i);
-    const cardHtml = await getPokeCard(data, i); 
-    
-    container.insertAdjacentHTML("beforeend", cardHtml);
+    const pokemon = currentPokemons[i];
+    const data = await getDetailedPokemonData(pokemon);
+    container.insertAdjacentHTML("beforeend", await getPokeCard(data, i));
   }
 }
 
@@ -147,14 +146,14 @@ function toggleLoading(show) {
   overlay.classList.toggle("hidden", !show);
 }
 
-async function getDetailedPokemonData(index) {
-  if (pokeJson[index].id) {
-    return pokeJson[index];
+async function getDetailedPokemonData(pokemon) {
+  if (pokemon.id) {
+    return pokemon;
   }
-  const response = await fetch(pokeJson[index].url);
+  const response = await fetch(pokemon.url);
   const details = await response.json();
-  pokeJson[index] = { ...pokeJson[index], ...details };
-  return pokeJson[index];
+  Object.assign(pokemon, details); 
+  return pokemon;
 }
 
 async function navigateOverlay(direction) {
