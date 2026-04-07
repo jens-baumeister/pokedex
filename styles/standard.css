@@ -52,7 +52,7 @@ button {
     background: none;
 }
 
-@media (max-width: 634px){
+@media (max-width: 634px) {
     header {
         height: 60px;
     }
