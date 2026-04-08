@@ -65,9 +65,10 @@ async function renderPokeCards(append = false) {
 let currentOverlayIndex = 0;
 
 async function openPokeCard(index) {
-  document.activeElement.blur();
+  document.activeElement.blur(); 
   currentOverlayIndex = index;
-  const data = await fetchPokemonData(index);
+  const pokemon = currentPokemons[index]; 
+  const data = await getDetailedPokemonData(pokemon); 
   document.getElementById("pokecard").innerHTML = getPokeDetails(data);
   document.getElementById("pokecard").classList.add("open");
   setTimeout(() => {
