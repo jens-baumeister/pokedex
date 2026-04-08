@@ -14,12 +14,9 @@ async function fetchPokemons(append = false) {
     const offset = pokeJson.length;
     let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
     if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
-
     let data = await response.json();
     pokeJson = pokeJson.concat(data.results);
-    const filterWord = document
-      .getElementById("poke-search")
-      .value.toLowerCase();
+    const filterWord = document.getElementById("poke-search").value.toLowerCase();
     if (filterWord.length < 3) {
       currentPokemons = pokeJson;
       await renderPokeCards(append, offset);
