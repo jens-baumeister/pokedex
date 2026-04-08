@@ -159,19 +159,11 @@ async function getDetailedPokemonData(pokemon) {
 
 async function navigateOverlay(direction) {
   currentOverlayIndex += direction;
-
-  if (currentOverlayIndex < 0) currentOverlayIndex = currentPokemons.length - 1;
-  if (currentOverlayIndex >= currentPokemons.length) currentOverlayIndex = 0;
-
-  const data = await fetchPokemonData(currentOverlayIndex);
-  document.getElementById("pokecard").innerHTML = getPokeDetails(data);
-
-  const typesHtml = await renderTypeIcons(data.types, "large");
-  document.getElementById("tab-types").innerHTML = typesHtml;
-
-  renderPokeDetails(data);
-}
-
-function loadMore() {
-  fetchPokemons(true);
+  if (currentOverlayIndex < 0) {
+    currentOverlayIndex = currentPokemons.length - 1;
+  }
+  if (currentOverlayIndex >= currentPokemons.length) {
+    currentOverlayIndex = 0; 
+  }
+  openPokeCard(currentOverlayIndex);
 }
