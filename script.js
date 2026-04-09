@@ -66,11 +66,17 @@ async function renderPokeCards(append = false, startAt = 0) {
 }
 
 function search() {
-  const filterWord = document.getElementById("poke-search").value.toLowerCase();
-  currentPokemons =
-    filterWord.length < 3
-      ? pokeJson
-      : pokeJson.filter((p) => p.name.toLowerCase().includes(filterWord));
+  const inputField = document.getElementById("poke-search");
+  const filterWord = inputField.value.toLowerCase().trim();
+  const loadMoreBtn = document.getElementById("load-btn");
+
+  if (filterWord.length < 3) {
+    currentPokemons = pokeJson;
+    if (loadMoreBtn) loadMoreBtn.classList.remove("hidden");
+  } else {
+    currentPokemons = pokeJson.filter((p) => p.name.toLowerCase().includes(filterWord));
+    if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
+  }
   renderPokeCards(false, 0);
 }
 
