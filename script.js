@@ -5,6 +5,7 @@ let currentOverlayIndex = 0;
 const BASE_URL = `https://pokeapi.co/api/v2/pokemon`;
 
 function init() {
+  document.getElementById("no-results").classList.add("hidden");
   fetchPokemons();
 }
 
@@ -69,6 +70,7 @@ function search() {
   const inputField = document.getElementById("poke-search");
   const filterWord = inputField.value.toLowerCase().trim();
   const loadMoreBtn = document.getElementById("load-btn");
+  const searchCheck = document.getElementById("no-results")
 
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
@@ -76,6 +78,7 @@ function search() {
   } else {
     currentPokemons = pokeJson.filter((p) => p.name.toLowerCase().includes(filterWord));
     if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
+    if (currentPokemons.length === 0) searchCheck.classList.remove("hidden");
   }
   renderPokeCards(false, 0);
 }
