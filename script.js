@@ -50,11 +50,13 @@ async function prepareTypeIcons(types) {
 }
 
 function prepareStatsHTML(stats) {
-  return stats.map((stat) => {
-    const width = Math.min(stat.base_stat, 100);
-    const name = stat.stat.name.toUpperCase();
-    return getStatsTemplate(name, width, stat.base_stat);
-  }).join("")
+  return stats
+    .map((stat) => {
+      const width = Math.min(stat.base_stat, 100);
+      const name = stat.stat.name.toUpperCase();
+      return getStatsTemplate(name, width, stat.base_stat);
+    })
+    .join("");
 }
 
 async function getDetailedPokemonData(pokemon) {

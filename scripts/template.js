@@ -1,5 +1,4 @@
 function getPokeCard(data, i, footerIcons) {
-
   return `
     <button class="card" onclick="openPokeCard(${i})">
       <div class="card-header">#${data.id} ${capitalize(data.name)}</div>
