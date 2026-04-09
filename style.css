@@ -216,7 +216,7 @@ input {
     min-width: 300px;
     min-height: 560px;
     width: 30%;
-    height: 56%;
+    height: 60%;
     display: flex;
     flex-direction: column;
     border: 1px solid #d9d9d9;
@@ -265,7 +265,6 @@ input {
 .pokecard-img {
     width: 100%;
     min-height: 150px;
-    /* height: 30%; */
 }
 
 .detail-img {
@@ -306,6 +305,7 @@ input {
 }
 
 .tabs {
+    padding: 5px;
     display: flex;
     justify-content: space-around;
     color: #d9d9d9;
@@ -316,8 +316,11 @@ input {
     font-size: 16px;
 }
 
+.tab:hover {
+    transform: scale(1.2);
+}
+
 .tab-content {
-    height: 180px;
     overscroll-behavior: contain;
 
 }
@@ -407,7 +410,6 @@ input {
 }
 
 #tab-types {
-    height: 350px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
