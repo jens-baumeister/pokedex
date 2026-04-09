@@ -112,8 +112,8 @@ function search() {
 }
 
 function searchResult(filterWord, loadMoreBtn, searchCheck) {
-  currentPokemons = pokeJson.filter((p) =>
-    p.name.toLowerCase().includes(filterWord),
+  currentPokemons = pokeJson.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(filterWord),
   );
   if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
   if (currentPokemons.length === 0 && searchCheck)
