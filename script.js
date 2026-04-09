@@ -13,7 +13,7 @@ async function fetchPokemons(append = false) {
   try {
     toggleLoading(true);
     const offset = pokeJson.length;
-    let newPokemons =  await loadRawData(offset)
+    let newPokemons = await loadRawData(offset);
     pokeJson = pokeJson.concat(newPokemons);
     await refreshDisplay(append, offset);
   } catch (err) {
@@ -23,22 +23,31 @@ async function fetchPokemons(append = false) {
   }
 }
 
-async function loadRawData(offset){
+async function loadRawData(offset) {
   let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
-    if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
-    let data = await response.json();
+  if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
+  let data = await response.json();
   return data.results;
-  }
+}
 
-  async function refreshDisplay(append, offset) {
-    const filterWord = document.getElementById("poke-search").value.toLowerCase();
-    if (filterWord.length < 3) {
-      currentPokemons = pokeJson;
-      await renderPokeCards(append, offset);
-    } else {
-      search();
-    }
+async function refreshDisplay(append, offset) {
+  const filterWord = document.getElementById("poke-search").value.toLowerCase();
+  if (filterWord.length < 3) {
+    currentPokemons = pokeJson;
+    await renderPokeCards(append, offset);
+  } else {
+    search();
   }
+}
+
+async function prepareTypeIcons(types) {
+  let footerIcons = "";
+  for (let t of types) {
+    const icon = await getTypeIconUrl(t.type.url, "symbol_icon");
+    footerIcons += `<img src="${icon}" alt="${t.type.name}" class="type-icon-small">`;
+  }
+  return footerIcons;
+}
 
 async function getDetailedPokemonData(pokemon) {
   if (pokemon.id) return pokemon;
@@ -70,7 +79,8 @@ async function renderPokeCards(append = false, startAt = 0) {
   for (let i = startAt; i < currentPokemons.length; i++) {
     const pokemon = currentPokemons[i];
     const data = await getDetailedPokemonData(pokemon);
-    const cardHtml = await getPokeCard(data, i);
+    const iconsHTML = await prepareTypeIcons(data.types);
+    const cardHtml = await getPokeCard(data, i, iconsHTML);
     container.insertAdjacentHTML("beforeend", cardHtml);
   }
 }
@@ -80,8 +90,8 @@ function search() {
   const filterWord = inputField.value.toLowerCase().trim();
   const loadMoreBtn = document.getElementById("load-btn");
   const searchCheck = document.getElementById("no-results");
-  
-  if (searchCheck) searchCheck.classList.add("hidden")
+
+  if (searchCheck) searchCheck.classList.add("hidden");
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
     if (loadMoreBtn) loadMoreBtn.classList.remove("hidden");
@@ -91,11 +101,13 @@ function search() {
   renderPokeCards(false, 0);
 }
 
-function searchResult(filterWord, loadMoreBtn, searchCheck){ 
-
-  currentPokemons = pokeJson.filter((p) => p.name.toLowerCase().includes(filterWord));
-    if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
-    if (currentPokemons.length === 0 && searchCheck) searchCheck.classList.remove("hidden");
+function searchResult(filterWord, loadMoreBtn, searchCheck) {
+  currentPokemons = pokeJson.filter((p) =>
+    p.name.toLowerCase().includes(filterWord),
+  );
+  if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
+  if (currentPokemons.length === 0 && searchCheck)
+    searchCheck.classList.remove("hidden");
 }
 
 async function openPokeCard(index) {
