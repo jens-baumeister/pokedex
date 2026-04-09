@@ -134,12 +134,14 @@ async function openPokeCard(index) {
   renderPokeDetails(data);
 }
 
-async function renderPokeDetails(data, name) {
+async function renderPokeDetails(data) {
   document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
   document.getElementById("tab-stats").innerHTML = prepareStatsHTML(data.stats);
-  const evoChain = await getEvolutionChain(data);
+  const evoListData = await getEvoData(
+    data.evolution_chain_obj || (await getEvolutionChain(data)),
+  );
   document.getElementById("tab-evo").innerHTML =
-    await renderEvolutionChain(evoChain);
+    await renderEvoHTML(evoListData);
 }
 
 async function renderTypeIcons(types, size = "large") {
@@ -173,26 +175,36 @@ async function getEvolutionChain(pokemonData) {
   return evoData.chain;
 }
 
-async function renderEvolutionChain(chain) {
-  let evoHTML = `<div class="evo-timeline">`;
-  async function traverse(node) {
-    const speciesData = await (await fetch(node.species.url)).json();
-    evoHTML += getEvoCardTemplate(speciesData.id, node.species.name);
-    if (node.evolves_to.length > 0) {
-      evoHTML += `<span class="evo-arrow">↓</span>`;
-      for (let next of node.evolves_to) await traverse(next);
-    }
-  }
-  await traverse(chain);
-  return evoHTML + `</div>`;
-}
-
 function showTab(tab) {
   const pokecard = document.getElementById("pokecard");
   pokecard
     .querySelectorAll(".tab-content")
     .forEach((el) => el.classList.add("hidden"));
   pokecard.querySelector(`#tab-${tab}`).classList.remove("hidden");
+}
+
+async function getEvoData(node, list = []) {
+  const speciesData = await (await fetch(node.species.url)).json();
+  list.push({ id: speciesData.id, name: node.species.name });
+
+  if (node.evolves_to.length > 0) {
+    for (let next of node.evolves_to) {
+      await getEvoData(next, list);
+    }
+  }
+  return list;
+}
+
+function renderEvoHTML(evoListData) {
+  return evoListData
+    .map((poke, index) => {
+      let html = getEvoCardTemplate(poke.id, poke.name);
+      if (index < evoListData.length - 1) {
+        html += `<span class="evo-arrow">↓</span>`;
+      }
+      return html;
+    })
+    .join("");
 }
 
 function capitalize(str) {
