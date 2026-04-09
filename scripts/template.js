@@ -44,17 +44,13 @@ function getImageTemplate(data) {
     </div>`;
 }
 
-function getStatsTemplate(data) {
-  return data.stats
-    .map(
-      (stat) => `
+function getStatsTemplate(name, width, value) {
+  return `
       <div class="stat-row">
-        <span>${stat.stat.name.toUpperCase()}</span>
-        <div class="bar"><div class="fill" style="width: ${Math.min(stat.base_stat, 100)}%"></div></div>
-        <span>${stat.base_stat}</span>
-      </div>`,
-    )
-    .join("");
+        <span>${name}</span>
+        <div class="bar"><div class="fill" style="width: ${width}%"></div></div>
+        <span>${value}</span>
+      </div>`;
 }
 
 function getEvoCardTemplate(id, name) {

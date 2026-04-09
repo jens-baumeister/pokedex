@@ -49,6 +49,14 @@ async function prepareTypeIcons(types) {
   return footerIcons;
 }
 
+function prepareStatsHTML(stats) {
+  return stats.map((stat) => {
+    const width = Math.min(stat.base_stat, 100);
+    const name = stat.stat.name.toUpperCase();
+    return getStatsTemplate(name, width, stat.base_stat);
+  }).join("")
+}
+
 async function getDetailedPokemonData(pokemon) {
   if (pokemon.id) return pokemon;
   const response = await fetch(pokemon.url);
@@ -124,9 +132,9 @@ async function openPokeCard(index) {
   renderPokeDetails(data);
 }
 
-async function renderPokeDetails(data) {
+async function renderPokeDetails(data, name) {
   document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
-  document.getElementById("tab-stats").innerHTML = getStatsTemplate(data);
+  document.getElementById("tab-stats").innerHTML = prepareStatsHTML(data.stats);
   const evoChain = await getEvolutionChain(data);
   document.getElementById("tab-evo").innerHTML =
     await renderEvolutionChain(evoChain);
