@@ -1,17 +1,9 @@
-async function getPokeCard(data, i) {
-  const id = data.id;
-  const mainType = data.types[0].type.name;
-  let footerIcons = "";
-  for (let t of data.types) {
-    const icon = await getTypeIconUrl(t.type.url, "symbol_icon");
-    footerIcons += `<img src="${icon}" alt="${t.type.name}" class="type-icon-small">`;
-  }
-
+function getPokeCard(data, i, footerIcons) {
   return `
     <button class="card" onclick="openPokeCard(${i})">
-      <div class="card-header">#${id} ${capitalize(data.name)}</div>
-      <div class="card-body ${mainType}">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${id}.png"
+      <div class="card-header">#${data.id} ${capitalize(data.name)}</div>
+      <div class="card-body ${data.types[0].type.name}">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${data.id}.png"
              alt="${data.name}">
       </div>
       <div class="card-footer">${footerIcons}</div>
@@ -51,17 +43,13 @@ function getImageTemplate(data) {
     </div>`;
 }
 
-function getStatsTemplate(data) {
-  return data.stats
-    .map(
-      (stat) => `
+function getStatsTemplate(name, width, value) {
+  return `
       <div class="stat-row">
-        <span>${stat.stat.name.toUpperCase()}</span>
-        <div class="bar"><div class="fill" style="width: ${Math.min(stat.base_stat, 100)}%"></div></div>
-        <span>${stat.base_stat}</span>
-      </div>`,
-    )
-    .join("");
+        <span>${name}</span>
+        <div class="bar"><div class="fill" style="width: ${width}%"></div></div>
+        <span>${value}</span>
+      </div>`;
 }
 
 function getEvoCardTemplate(id, name) {

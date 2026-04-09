@@ -13,22 +13,50 @@ async function fetchPokemons(append = false) {
   try {
     toggleLoading(true);
     const offset = pokeJson.length;
-    let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
-    if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
-    let data = await response.json();
-    pokeJson = pokeJson.concat(data.results);
-    const filterWord = document.getElementById("poke-search").value.toLowerCase();
-    if (filterWord.length < 3) {
-      currentPokemons = pokeJson;
-      await renderPokeCards(append, offset);
-    } else {
-      search();
-    }
+    let newPokemons = await loadRawData(offset);
+    pokeJson = pokeJson.concat(newPokemons);
+    await refreshDisplay(append, offset);
   } catch (err) {
     console.error("Fehler beim Laden:", err);
   } finally {
     toggleLoading(false);
   }
+}
+
+async function loadRawData(offset) {
+  let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
+  if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
+  let data = await response.json();
+  return data.results;
+}
+
+async function refreshDisplay(append, offset) {
+  const filterWord = document.getElementById("poke-search").value.toLowerCase();
+  if (filterWord.length < 3) {
+    currentPokemons = pokeJson;
+    await renderPokeCards(append, offset);
+  } else {
+    search();
+  }
+}
+
+async function prepareTypeIcons(types) {
+  let footerIcons = "";
+  for (let t of types) {
+    const icon = await getTypeIconUrl(t.type.url, "symbol_icon");
+    footerIcons += `<img src="${icon}" alt="${t.type.name}" class="type-icon-small">`;
+  }
+  return footerIcons;
+}
+
+function prepareStatsHTML(stats) {
+  return stats
+    .map((stat) => {
+      const width = Math.min(stat.base_stat, 100);
+      const name = stat.stat.name.toUpperCase();
+      return getStatsTemplate(name, width, stat.base_stat);
+    })
+    .join("");
 }
 
 async function getDetailedPokemonData(pokemon) {
@@ -61,7 +89,8 @@ async function renderPokeCards(append = false, startAt = 0) {
   for (let i = startAt; i < currentPokemons.length; i++) {
     const pokemon = currentPokemons[i];
     const data = await getDetailedPokemonData(pokemon);
-    const cardHtml = await getPokeCard(data, i);
+    const iconsHTML = await prepareTypeIcons(data.types);
+    const cardHtml = await getPokeCard(data, i, iconsHTML);
     container.insertAdjacentHTML("beforeend", cardHtml);
   }
 }
@@ -70,18 +99,25 @@ function search() {
   const inputField = document.getElementById("poke-search");
   const filterWord = inputField.value.toLowerCase().trim();
   const loadMoreBtn = document.getElementById("load-btn");
-  const searchCheck = document.getElementById("no-results")
+  const searchCheck = document.getElementById("no-results");
 
-  if (searchCheck) searchCheck.classList.add("hidden")
+  if (searchCheck) searchCheck.classList.add("hidden");
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
     if (loadMoreBtn) loadMoreBtn.classList.remove("hidden");
   } else {
-    currentPokemons = pokeJson.filter((p) => p.name.toLowerCase().includes(filterWord));
-    if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
-    if (currentPokemons.length === 0) searchCheck.classList.remove("hidden");
+    searchResult(filterWord, loadMoreBtn, searchCheck);
   }
   renderPokeCards(false, 0);
+}
+
+function searchResult(filterWord, loadMoreBtn, searchCheck) {
+  currentPokemons = pokeJson.filter((p) =>
+    p.name.toLowerCase().includes(filterWord),
+  );
+  if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
+  if (currentPokemons.length === 0 && searchCheck)
+    searchCheck.classList.remove("hidden");
 }
 
 async function openPokeCard(index) {
@@ -100,10 +136,12 @@ async function openPokeCard(index) {
 
 async function renderPokeDetails(data) {
   document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
-  document.getElementById("tab-stats").innerHTML = getStatsTemplate(data);
-  const evoChain = await getEvolutionChain(data);
+  document.getElementById("tab-stats").innerHTML = prepareStatsHTML(data.stats);
+  const evoListData = await getEvoData(
+    data.evolution_chain_obj || (await getEvolutionChain(data)),
+  );
   document.getElementById("tab-evo").innerHTML =
-    await renderEvolutionChain(evoChain);
+    await renderEvoHTML(evoListData);
 }
 
 async function renderTypeIcons(types, size = "large") {
@@ -137,26 +175,36 @@ async function getEvolutionChain(pokemonData) {
   return evoData.chain;
 }
 
-async function renderEvolutionChain(chain) {
-  let evoHTML = `<div class="evo-timeline">`;
-  async function traverse(node) {
-    const speciesData = await (await fetch(node.species.url)).json();
-    evoHTML += getEvoCardTemplate(speciesData.id, node.species.name);
-    if (node.evolves_to.length > 0) {
-      evoHTML += `<span class="evo-arrow">↓</span>`;
-      for (let next of node.evolves_to) await traverse(next);
-    }
-  }
-  await traverse(chain);
-  return evoHTML + `</div>`;
-}
-
 function showTab(tab) {
   const pokecard = document.getElementById("pokecard");
   pokecard
     .querySelectorAll(".tab-content")
     .forEach((el) => el.classList.add("hidden"));
   pokecard.querySelector(`#tab-${tab}`).classList.remove("hidden");
+}
+
+async function getEvoData(node, list = []) {
+  const speciesData = await (await fetch(node.species.url)).json();
+  list.push({ id: speciesData.id, name: node.species.name });
+
+  if (node.evolves_to.length > 0) {
+    for (let next of node.evolves_to) {
+      await getEvoData(next, list);
+    }
+  }
+  return list;
+}
+
+function renderEvoHTML(evoListData) {
+  return evoListData
+    .map((poke, index) => {
+      let html = getEvoCardTemplate(poke.id, poke.name);
+      if (index < evoListData.length - 1) {
+        html += `<span class="evo-arrow">↓</span>`;
+      }
+      return html;
+    })
+    .join("");
 }
 
 function capitalize(str) {
