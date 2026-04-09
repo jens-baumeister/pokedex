@@ -13,10 +13,24 @@ async function fetchPokemons(append = false) {
   try {
     toggleLoading(true);
     const offset = pokeJson.length;
-    let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
+    let newPokemons =  await loadRawData(offset)
+    pokeJson = pokeJson.concat(newPokemons);
+    await refreshDisplay(append, offset);
+  } catch (err) {
+    console.error("Fehler beim Laden:", err);
+  } finally {
+    toggleLoading(false);
+  }
+}
+
+async function loadRawData(offset){
+  let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
     if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
     let data = await response.json();
-    pokeJson = pokeJson.concat(data.results);
+  return data.results;
+  }
+
+  async function refreshDisplay(append, offset) {
     const filterWord = document.getElementById("poke-search").value.toLowerCase();
     if (filterWord.length < 3) {
       currentPokemons = pokeJson;
@@ -24,12 +38,7 @@ async function fetchPokemons(append = false) {
     } else {
       search();
     }
-  } catch (err) {
-    console.error("Fehler beim Laden:", err);
-  } finally {
-    toggleLoading(false);
   }
-}
 
 async function getDetailedPokemonData(pokemon) {
   if (pokemon.id) return pokemon;
@@ -70,8 +79,8 @@ function search() {
   const inputField = document.getElementById("poke-search");
   const filterWord = inputField.value.toLowerCase().trim();
   const loadMoreBtn = document.getElementById("load-btn");
-  const searchCheck = document.getElementById("no-results")
-
+  const searchCheck = document.getElementById("no-results");
+  
   if (searchCheck) searchCheck.classList.add("hidden")
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
@@ -86,7 +95,7 @@ function searchResult(filterWord, loadMoreBtn, searchCheck){
 
   currentPokemons = pokeJson.filter((p) => p.name.toLowerCase().includes(filterWord));
     if (loadMoreBtn) loadMoreBtn.classList.add("hidden");
-    if (currentPokemons.length === 0) searchCheck.classList.remove("hidden");
+    if (currentPokemons.length === 0 && searchCheck) searchCheck.classList.remove("hidden");
 }
 
 async function openPokeCard(index) {
