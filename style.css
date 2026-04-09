@@ -179,6 +179,7 @@ input {
 .load-btn {
     width: 120px;
     height: 40px;
+    margin: 20px;
     background-color: #ff0201;
     color: #d9d9d9;
     border-radius: 20px;

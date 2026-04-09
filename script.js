@@ -72,6 +72,7 @@ function search() {
   const loadMoreBtn = document.getElementById("load-btn");
   const searchCheck = document.getElementById("no-results")
 
+  if (searchCheck) searchCheck.classList.add("hidden")
   if (filterWord.length < 3) {
     currentPokemons = pokeJson;
     if (loadMoreBtn) loadMoreBtn.classList.remove("hidden");
