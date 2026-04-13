@@ -21,6 +21,8 @@ async function fetchPokemons(append = false) {
   } finally {
     toggleLoading(false);
   }
+  console.log(pokeJson);
+  
 }
 
 async function loadRawData(offset) {
