@@ -9,6 +9,10 @@ function init() {
   fetchPokemons();
 }
 
+/**
+ * Fetch the next batch of Pokémon from the API and update the card display.
+ * @param {boolean} [append=false] - If true, appends new cards instead of replacing the existing ones.
+ */
 async function fetchPokemons(append = false) {
   try {
     toggleLoading(true);
@@ -25,6 +29,12 @@ async function fetchPokemons(append = false) {
   
 }
 
+/**
+ * Load a batch of Pokémon metadata from the PokeAPI.
+ * @param {number} offset - Number of already loaded Pokémon to skip.
+ * @returns {Promise<Array>} Array of raw Pokémon entries from the API.
+ * @throws {Error} When the network response is not ok.
+ */
 async function loadRawData(offset) {
   let response = await fetch(`${BASE_URL}?limit=20&offset=${offset}`);
   if (!response.ok) throw new Error(`Fehler! Status: ${response.status}`);
@@ -32,6 +42,15 @@ async function loadRawData(offset) {
   return data.results;
 }
 
+/**
+ * Refresh the visible Pokémon list based on the current search input.
+ * If the search input is shorter than 3 characters the full loaded
+ * list (pokeJson) will be displayed, otherwise a filtered search is used.
+ *
+ * @param {boolean} append - When true, newly rendered cards are appended.
+ * @param {number} offset - Index to start rendering from when appending.
+ * @returns {Promise<void>}
+ */
 async function refreshDisplay(append, offset) {
   const filterWord = document.getElementById("poke-search").value.toLowerCase();
   if (filterWord.length < 3) {
@@ -42,6 +61,11 @@ async function refreshDisplay(append, offset) {
   }
 }
 
+/**
+ * Prepare the HTML for small type icon badges.
+ * @param {Array} types - Array of type objects returned from the Pokémon API.
+ * @returns {Promise<string>} HTML string containing the rendered type icons.
+ */
 async function prepareTypeIcons(types) {
   let footerIcons = "";
   for (let t of types) {
@@ -51,6 +75,11 @@ async function prepareTypeIcons(types) {
   return footerIcons;
 }
 
+/**
+ * Generate HTML for the Pokémon stats tab.
+ * @param {Array} stats - Array of stat objects from the Pokémon API.
+ * @returns {string} HTML string with rendered stat bars.
+ */
 function prepareStatsHTML(stats) {
   return stats
     .map((stat) => {
@@ -61,6 +90,16 @@ function prepareStatsHTML(stats) {
     .join("");
 }
 
+/**
+ * Load detailed data for a single Pokémon entry.
+ * If the entry already contains an id, it is assumed to be loaded
+ * and returned directly. Otherwise the function fetches the full
+ * Pokémon details from the provided resource URL and merges them
+ * back into the original object.
+ *
+ * @param {Object} pokemon - Pokémon entry with at least a url property.
+ * @returns {Promise<Object>} Detailed Pokémon data.
+ */
 async function getDetailedPokemonData(pokemon) {
   if (pokemon.id) return pokemon;
   const response = await fetch(pokemon.url);
@@ -69,6 +108,17 @@ async function getDetailedPokemonData(pokemon) {
   return pokemon;
 }
 
+/**
+ * Fetches and caches Pokémon type icon URLs.
+ *
+ * If the requested type data is already cached, the cached URL is returned
+ * immediately. Otherwise, the type endpoint is fetched and the URLs for the
+ * requested icon sizes are stored in the cache.
+ *
+ * @param {string} typeUrl - API URL for the Pokémon type details.
+ * @param {string} [size="symbol_icon"] - Requested icon size key.
+ * @returns {Promise<string>} URL for the requested type icon.
+ */
 async function getTypeIconUrl(typeUrl, size = "symbol_icon") {
   if (typeCache[typeUrl]) return typeCache[typeUrl][size];
   const res = await fetch(typeUrl);
@@ -81,6 +131,18 @@ async function getTypeIconUrl(typeUrl, size = "symbol_icon") {
   return typeCache[typeUrl][size];
 }
 
+/**
+ * Render Pokémon cards into the main card container.
+ *
+ * If append is false, the container is cleared before rendering and the
+ * rendering starts from the first Pokémon in the current list. When append
+ * is true, rendering begins at the provided startAt index and preserves the
+ * existing card elements.
+ *
+ * @param {boolean} [append=false] - Whether the rendered cards should be appended.
+ * @param {number} [startAt=0] - Index in currentPokemons to start rendering from.
+ * @returns {Promise<void>}
+ */
 async function renderPokeCards(append = false, startAt = 0) {
   const container = document.getElementById("card");
   if (!append) {
@@ -97,6 +159,15 @@ async function renderPokeCards(append = false, startAt = 0) {
   }
 }
 
+/**
+ * Search for Pokémon by name based on user input.
+ * If the search term has fewer than 3 characters, displays all loaded Pokémon.
+ * Otherwise, filters the Pokémon list by name matching the search term.
+ * Updates the UI by hiding/showing the "Load More" button and "No Results" message.
+ * Re-renders the Pokémon cards based on the search results.
+ *
+ * @returns {void}
+ */
 function search() {
   const inputField = document.getElementById("poke-search");
   const filterWord = inputField.value.toLowerCase().trim();
@@ -113,6 +184,13 @@ function search() {
   renderPokeCards(false, 0);
 }
 
+/**
+ * Filter the loaded Pokémon list by name and update search-related UI elements.
+ *
+ * @param {string} filterWord - Lowercased search term to match against Pokémon names.
+ * @param {HTMLElement|null} loadMoreBtn - The "Load More" button element.
+ * @param {HTMLElement|null} searchCheck - The "No Results" indicator element.
+ */
 function searchResult(filterWord, loadMoreBtn, searchCheck) {
   currentPokemons = pokeJson.filter((pokemon) =>
     pokemon.name.toLowerCase().includes(filterWord),
@@ -122,6 +200,11 @@ function searchResult(filterWord, loadMoreBtn, searchCheck) {
     searchCheck.classList.remove("hidden");
 }
 
+/**
+ * Open the Pokémon detail overlay for the selected Pokémon index.
+ *
+ * @param {number} index - Index of the Pokémon in the current filtered list.
+ */
 async function openPokeCard(index) {
   currentOverlayIndex = index;
   const pokemon = currentPokemons[index];
@@ -136,6 +219,13 @@ async function openPokeCard(index) {
   renderPokeDetails(data);
 }
 
+/**
+ * Render the Pokémon details in the overlay tabs.
+ *
+ * @param {Object} data - Detailed Pokémon data object.
+ * @param {Array} data.stats - Pokémon stats used for the stats tab.
+ * @param {Object} [data.evolution_chain_obj] - Cached evolution chain object.
+ */
 async function renderPokeDetails(data) {
   document.getElementById("pokecard-img").innerHTML = getImageTemplate(data);
   document.getElementById("tab-stats").innerHTML = prepareStatsHTML(data.stats);
@@ -146,6 +236,15 @@ async function renderPokeDetails(data) {
     await renderEvoHTML(evoListData);
 }
 
+/**
+ * Render HTML for type icons.
+ *
+ * @param {Array} types - Array of type objects as returned from the Pokémon API
+ *                        (each item has a `type` property with `name` and `url`).
+ * @param {string} [size="large"] - Size of the icon, either "large" or any other
+ *                                    value which will use the symbol icon.
+ * @returns {Promise<string>} - HTML string containing <img> elements for each type.
+ */
 async function renderTypeIcons(types, size = "large") {
   let html = "";
   const iconKey = size === "large" ? "name_icon" : "symbol_icon";
@@ -156,6 +255,11 @@ async function renderTypeIcons(types, size = "large") {
   return html;
 }
 
+/**
+ * Navigate the overlay carousel.
+ *
+ * @param {number} direction - Direction to move in the overlay, typically -1 or 1.
+ */
 async function navigateOverlay(direction) {
   currentOverlayIndex += direction;
   if (currentOverlayIndex < 0) currentOverlayIndex = currentPokemons.length - 1;
@@ -163,20 +267,37 @@ async function navigateOverlay(direction) {
   openPokeCard(currentOverlayIndex);
 }
 
+/**
+ * Close the currently open Pokémon detail card overlay.
+ */
 function closePokeCard() {
   document.getElementById("pokecard").classList.remove("open");
 }
 
+/**
+ * Load additional Pokémon into the list.
+ */
 function loadMore() {
   fetchPokemons(true);
 }
 
+/**
+ * Fetch the evolution chain data for a given Pokémon.
+ *
+ * @param {Object} pokemonData - The Pokémon data object.
+ * @returns {Promise<Object>} The root of the evolution chain.
+ */
 async function getEvolutionChain(pokemonData) {
   const speciesData = await (await fetch(pokemonData.species.url)).json();
   const evoData = await (await fetch(speciesData.evolution_chain.url)).json();
   return evoData.chain;
 }
 
+/**
+ * Show the selected tab in the Pokémon detail card overlay.
+ *
+ * @param {string} tab - The id suffix of the tab to display.
+ */
 function showTab(tab) {
   const pokecard = document.getElementById("pokecard");
   pokecard
@@ -185,6 +306,13 @@ function showTab(tab) {
   pokecard.querySelector(`#tab-${tab}`).classList.remove("hidden");
 }
 
+/**
+ * Recursively build a flat list of evolution chain species.
+ *
+ * @param {Object} node - Evolution chain node from the PokéAPI.
+ * @param {Array} list - List accumulator for species data.
+ * @returns {Promise<Array>} Flattened list of evolution species.
+ */
 async function getEvoData(node, list = []) {
   const speciesData = await (await fetch(node.species.url)).json();
   list.push({ id: speciesData.id, name: node.species.name });
@@ -197,6 +325,12 @@ async function getEvoData(node, list = []) {
   return list;
 }
 
+/**
+ * Build HTML for the evolution chain display.
+ *
+ * @param {Array} evoListData - List of evolution species.
+ * @returns {string} HTML string of evolution cards.
+ */
 function renderEvoHTML(evoListData) {
   return evoListData
     .map((poke, index) => {
@@ -209,10 +343,21 @@ function renderEvoHTML(evoListData) {
     .join("");
 }
 
+/**
+ * Capitalize the first character of a string.
+ *
+ * @param {string} str - Input string.
+ * @returns {string} Capitalized string.
+ */
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+/**
+ * Toggle the loading overlay visibility.
+ *
+ * @param {boolean} show - True to show the overlay, false to hide.
+ */
 function toggleLoading(show) {
   const overlay = document.getElementById("loading-overlay");
   if (overlay) overlay.classList.toggle("hidden", !show);
