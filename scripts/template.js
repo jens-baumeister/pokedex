@@ -3,7 +3,7 @@ function getPokeCard(data, i, footerIcons) {
     <button class="card" onclick="openPokeCard(${i})">
       <div class="card-header">#${data.id} ${capitalize(data.name)}</div>
       <div class="card-body ${data.types[0].type.name}">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${data.id}.png"
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/icons/${data.id}.png"
              alt="${data.name}">
       </div>
       <div class="card-footer">${footerIcons}</div>
@@ -39,7 +39,7 @@ function getPokeDetails(data) {
 
 function getImageTemplate(data) {
   return `<div class="detail-img ${data.types[0].type.name}">
-      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/${data.id}.png">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-viii/brilliant-diamond-shining-pearl/icons/${data.id}.png">
     </div>`;
 }
 

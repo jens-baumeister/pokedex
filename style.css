@@ -106,9 +106,8 @@ input {
 }
 
 .card-body img {
-    width: 200px;
-    height: 200px;
-    padding-bottom: 30px;
+    width: 100px;
+    height: 100px;
     object-position: center;
     filter: drop-shadow(20px 15px 4px rgba(0, 0, 0, 0.4));
 }
@@ -141,6 +140,7 @@ input {
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .card-footer {
@@ -219,6 +219,7 @@ input {
     height: 50%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     border: 1px solid #d9d9d9;
     border-radius: 10px;
     color: #d9d9d9;
@@ -264,19 +265,20 @@ input {
 
 .pokecard-img {
     width: 100%;
-    min-height: 150px;
+    height: 150px;
 }
 
 .detail-img {
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
 }
 
 .detail-img img {
-    padding-bottom: 10%;
-    height: 200px;
+    padding-bottom: 10px;
+    height: 100px;
+    width: 100px;
     object-position: center;
 }
 
